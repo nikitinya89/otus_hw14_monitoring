@@ -138,3 +138,67 @@ systemctl start grafana-server.service
 
 
 ### Zabbix
+Дополнительно установим Zabbix на сервер и Zabbix Agent на клиент. Будем использовать *nginx* в качестве веб-сервера и базу данных *MaridDB*.
+
+#### Установка Zabbix Server
+```bash
+wget https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
+dpkg -i zabbix-release_6.4-1+ubuntu22.04_all.deb
+apt update
+apt install zabbix-server-mysql zabbix-frontend-php zabbix-nginx-conf zabbix-sql-scripts zabbix-agent mariadb-server
+systemctl start mariadb.service
+
+mysql -uroot
+  mysql> create database zabbix character set utf8 collate utf8_bin;
+  mysql> create user zabbix@localhost identified by 'password';
+  mysql> grant all privileges on zabbix.* to zabbix@localhost;
+  mysql> set global log_bin_trust_function_creators = 1;
+  mysql> quit;
+
+zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
+mysql -uroot
+  mysql> set global log_bin_trust_function_creators = 0;
+  mysql> quit;
+```
+В конфигурационный файл сервера */etc/zabbix/zabbix_server.conf* пропишем пароль для базы данных
+```
+DBPassword=password
+```
+Раскомментируем строки в файле */etc/zabbix/nginx.conf*
+```
+# listen 8080;
+# server_name example.com;
+```
+Запустим сервисы:
+```
+systemctl restart zabbix-server zabbix-agent nginx php8.1-fpm
+```
+#### Установка Zabbix Agent
+```bash
+wget https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
+dpkg -i zabbix-release_6.4-1+ubuntu22.04_all.deb
+apt update
+apt install zabbix-agent
+systemctl restart zabbix-agent
+```
+В конфигурационном файле /etc/zabbix/zabbix_agent.conf укажем адрес сервера и перезапустим сервис:
+```
+Server=192.168.88.10
+```
+
+В результате мы получим две ВМ с установленными Zabbix сервером и агентов. Добавим новый хост на сервер. Будем использовать готовый шаблон *Linux by Zabbix agent*:  
+
+<table>
+  <tr>
+    <td>
+      <img src="zabbix.jpg" alt="Zabbix Server" style="width:100%;">
+    </td>
+    <td>
+      <img src="host.jpg" alt="Zabbix Agent" style="width:100%;">
+    </td>
+  </tr>
+</table>
+Для выполнения домашнего задания создадим свой дэшборд:
+
+
+![Zabbix Dashboard](dashboard2.jpg) 

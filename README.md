@@ -113,5 +113,28 @@ systemctl start grafana-server.service
 
 В результате мы получим сервер с установленными Prometheus и Grafana, и клиент с Node Exporter
 
+<table>
+  <tr>
+    <td>
+      <img src="prometheus.jpg" alt="Prometheus" style="width:100%;">
+    </td>
+    <td>
+      <img src="node-exporter.jpg" alt="Node Exporter" style="width:100%;">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="metrics.jpg" alt="Metrics" style="width:100%;">
+    </td>
+    <td>
+      <img src="grafana.jpg" alt="Grafana" style="width:100%;">
+    </td>
+  </tr>
+</table>
+
+Для выполнения задания будем использовать готовый дэшборд **Node Exporter Full**. Он покрывает поставленные задачи мониторинга:  
+  
+![Grafana Dashboard](dashboard.jpg)
+
 
 ### Zabbix

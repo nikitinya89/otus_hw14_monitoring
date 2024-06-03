@@ -110,4 +110,8 @@ apt -f install
 systemctl daemon-reload
 systemctl start grafana-server.service
 ```
+
+В результате мы получим сервер с установленными Prometheus и Grafana, и клиент с Node Exporter
+
+
 ### Zabbix
